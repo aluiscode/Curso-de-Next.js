@@ -7,8 +7,8 @@ const HelloWorld = ({channels}) => {
       <header>Podcasts</header>
       <div className='channels'>
         {channels.map(channel => (
-          <Link href="/channel" prefetch>
-            <a key={ channel.id } className='channel'>
+          <Link key={channel.id} href={`/channel?id=${channel.id}`}>
+            <a className='channel'>
               <img src={channel.urls.logo_image.original} alt="" />
               <h2>{ channel.title }</h2>
             </a>
