@@ -1,5 +1,7 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Error from './_error';
+import Layout from '../components/Layout';
+import PodcastLinkWithClick from '../components/PodcastLinkWhitClick';
 
 const Channel = ( {channel, audioClips, series, statusCode} ) => {
   if(statusCode !==200 ){
@@ -13,18 +15,15 @@ const Channel = ( {channel, audioClips, series, statusCode} ) => {
         <h1>{channel.title}</h1>
 
         <h2>Series</h2>
-        {audioClips.map((clip) => (
+        {series.map((clip) => (
           <div key={clip.id}>
             {clip.title}
           </div>
         ))}
 
         <h2>Utimos Podcast</h2>
-        {series.map((serie) => (
-          <div key={serie.id}>
-            {serie.title}
-          </div>
-        ))}
+        {console.log(audioClips)}
+        <PodcastLinkWithClick audioClips={ audioClips }/>
 
         <style jsx>{`
           header {
@@ -78,7 +77,7 @@ Channel.getInitialProps = async ({ res, query }) => {
     const [reqChannel, reqAudio, reqSeries] = await Promise.all([
       fetch(`https://api.audioboom.com/channels/${idChannel}`),
       fetch(`https://api.audioboom.com/channels/${idChannel}/audio_clips`),
-      fetch(`https://api.audioboom.com/channels/${idChannel}/child_channels`)
+      fetch(`https://api.audioboom.com/channels/4702115/child_channels`)
     ])
 
     if(reqChannel.status >= 400){
