@@ -1,5 +1,5 @@
 import React from 'react';
-import Error from 'next/error';
+import Error from './_error';
 
 const Channel = ( {channel, audioClips, series, statusCode} ) => {
   if(statusCode !==200 ){
