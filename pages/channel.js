@@ -1,6 +1,11 @@
 import React from 'react';
+import Error from 'next/error';
 
-const Channel = ( {channel, audioClips, series} ) => {
+const Channel = ( {channel, audioClips, series, statusCode} ) => {
+  if(statusCode !==200 ){
+    return (<Error statusCode={statusCode}/>);
+  }
+
   return (
       <>
         <header>Podcasts</header>
@@ -66,25 +71,35 @@ const Channel = ( {channel, audioClips, series} ) => {
   );
 };
 
-Channel.getInitialProps = async ({ query }) => {
+Channel.getInitialProps = async ({ res, query }) => {
   const idChannel = query.id;
 
-  const [reqChannel, reqAudio, reqSeries] = await Promise.all([
-    fetch(`https://api.audioboom.com/channels/${idChannel}`),
-    fetch(`https://api.audioboom.com/channels/${idChannel}/audio_clips`),
-    fetch(`https://api.audioboom.com/channels/${idChannel}/child_channels`)
-  ])
+  try {
+    const [reqChannel, reqAudio, reqSeries] = await Promise.all([
+      fetch(`https://api.audioboom.com/channels/${idChannel}`),
+      fetch(`https://api.audioboom.com/channels/${idChannel}/audio_clips`),
+      fetch(`https://api.audioboom.com/channels/${idChannel}/child_channels`)
+    ])
 
-  const dataChannel = await reqChannel.json();
-  const channel = dataChannel.body.channel;
+    if(reqChannel.status >= 400){
+      res.statusCode = reqChannel.status;
+      return { channel: [], audioClips: [], series: [], statusCode: reqChannel.status}
+    }
 
-  const dataAudios = await reqAudio.json();
-  const audioClips = dataAudios.body.audio_clips;
+    const dataChannel = await reqChannel.json();
+    const channel = dataChannel.body.channel;
 
-  const dataSeries = await reqSeries.json();
-  const series = dataSeries.body.channels;
-  console.log(series)
-  return { channel, audioClips, series }
+    const dataAudios = await reqAudio.json();
+    const audioClips = dataAudios.body.audio_clips;
+
+    const dataSeries = await reqSeries.json();
+    const series = dataSeries.body.channels;
+
+    return { channel, audioClips, series, statusCode:200}
+  } catch (error) {
+    res.statusCode = 503;
+    return { channel: [], audioClips: [], series: [], statusCode:503}
+  }
 }
 
 export default Channel;
