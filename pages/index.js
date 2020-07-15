@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link';
 
 const HelloWorld = ({channels}) => {
   return (
@@ -6,11 +7,12 @@ const HelloWorld = ({channels}) => {
       <header>Podcasts</header>
       <div className='channels'>
         {channels.map(channel => (
-          // <div>{channel.title}</div>
-          <div key={ channel.id } className='channel'>
-            <img src={channel.urls.logo_image.original} alt="" />
-            <h2>{ channel.title }</h2>
-          </div>
+          <Link href="/channel" prefetch>
+            <a key={ channel.id } className='channel'>
+              <img src={channel.urls.logo_image.original} alt="" />
+              <h2>{ channel.title }</h2>
+            </a>
+          </Link>
         ))}
       </div>
       <style jsx>{`
