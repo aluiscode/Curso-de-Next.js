@@ -1,11 +1,17 @@
 import React from 'react';
-import Link from 'next/link';
+import {Link} from '../routes';
+import slug from '../helpers/slug';
 
 const ChannelGrid = ({channels}) => {
   return (
     <div className='channels'>
     {channels.map(channel => (
-      <Link key={channel.id} href={`/channel?id=${channel.id}`}>
+      <Link route="channel" params={
+        {
+          slug: slug(channel.title),
+          id: channel.id,
+        }
+      } key={channel.id} prefetch >
         <a className='channel'>
           <img src={channel.urls.logo_image.original} alt="" />
           <h2>{ channel.title }</h2>
