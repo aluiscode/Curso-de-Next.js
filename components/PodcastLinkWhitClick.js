@@ -1,15 +1,18 @@
 import { Link } from '../routes'
 import slug from '../helpers/slug'
 
-const PodcastLinkWithClick = ({audioClips}) => {
+const PodcastLinkWithClick = ({audioClips, onClickPodcast}) => {
   return (
     <>
       { audioClips.map((podcast) => (
-        <Link route='podcast'
-          params={{ slug: slug(podcast.title), id: podcast.id,
-                    slugChannel: slug(podcast.channel.title), idChannel: podcast.channel.id }}
-          prefetch key={podcast.id}>
-          <a className='podcast'>
+        <Link route='podcast' params={
+            { slug: slug(podcast.title),
+              id: podcast.id,
+              slugChannel: slug(podcast.channel.title),
+              idChannel: podcast.channel.id
+            }}
+          key={podcast.id} prefetch>
+          <a className='podcast' onClick={(e) => onClickPodcast(e,podcast)}>
             <h3>{ podcast.title }</h3>
             <div className='meta'>
               { Math.ceil(podcast.duration / 60) } minutes

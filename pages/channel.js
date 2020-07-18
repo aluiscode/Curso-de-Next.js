@@ -1,29 +1,49 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import Error from './_error';
-import Layout from '../components/Layout';
+import ChannelGrid from '../components/ChannelGrid'
 import PodcastLinkWithClick from '../components/PodcastLinkWhitClick';
+import PodcastPlayer from '../components/PodcastPlayer';
 
 const Channel = ( {channel, audioClips, series, statusCode} ) => {
   if(statusCode !==200 ){
     return (<Error statusCode={statusCode}/>);
   }
 
+  const [podCast, setPodcast]= useState(null);
+
+  function openPodcast(event, podcast){
+    event.preventDefault();
+    setPodcast(podcast);
+  };
+
+  function closePodcast(event){
+    event.preventDefault();
+    setPodcast(null)
+  }
+
   return (
       <>
         <header>Podcasts</header>
 
+        <div className="banner" style={{ backgroundImage: `url(${channel.urls.banner_image.original})` }} />
+
+        {podCast &&
+          <div className='modal'>
+            <PodcastPlayer clip={ podCast } onClose={ closePodcast } />
+          </div>
+        }
+
         <h1>{channel.title}</h1>
 
-        <h2>Series</h2>
-        {series.map((clip) => (
-          <div key={clip.id}>
-            {clip.title}
-          </div>
-        ))}
+        { series.length > 0 &&
+        <div>
+          <h2>Series</h2>
+          <ChannelGrid channels={ series } />
+        </div>
+      }
 
         <h2>Utimos Podcast</h2>
-        {console.log(audioClips)}
-        <PodcastLinkWithClick audioClips={ audioClips }/>
+        <PodcastLinkWithClick audioClips={ audioClips } onClickPodcast={ openPodcast }/>
 
         <style jsx>{`
           header {
@@ -47,6 +67,13 @@ const Channel = ( {channel, audioClips, series, statusCode} ) => {
           .channel img {
             width: 100%;
           }
+          .banner {
+          width: 100%;
+          padding-bottom: 25%;
+          background-position: 50% 50%;
+          background-size: cover;
+          background-color: #aaa;
+          }
           h1{
             font-weight: 600;
             padding: 15px
@@ -57,6 +84,15 @@ const Channel = ( {channel, audioClips, series, statusCode} ) => {
             font-weight: 600;
             margin: 0;
             text-align: center;
+          }
+          .modal{
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: black;
+            z-index:9999;
           }
         `}</style>
         <style jsxglobal='true'>{`
