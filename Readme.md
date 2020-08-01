@@ -12,6 +12,6 @@ Require Node.js 12
 * `npm run dev` Para el entorno de desarrollo
 * `npm run build && npm run start` Para el entorno de producción
 
-#Licencia
+## Licencia
 
 MIT
